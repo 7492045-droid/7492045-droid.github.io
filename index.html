@@ -1,86 +1,78 @@
 <style>
-    .cute-table {
+    .timetable {
         width: 100%;
         border-collapse: collapse;
-        font-family: "Comic Sans MS", "DFKai-SB", sans-serif;
-        background: #fff0f6;
-        border-radius: 12px;
-        overflow: hidden;
+        font-family: Arial, sans-serif;
+        text-align: center;
     }
 
-    .cute-table th {
-        background: #ffb6d9;
-        color: white;
-        padding: 12px;
-        font-size: 18px;
-        letter-spacing: 1px;
-    }
-
-    .cute-table td {
-        border: 1px solid #ffcce1;
+    .timetable th {
+        background-color: #e0e0e0;
         padding: 10px;
         font-size: 16px;
-        color: #444;
-        background: #fff8fb;
+        border: 1px solid #999;
     }
 
-    .cute-title {
-        font-family: "Comic Sans MS", "DFKai-SB", sans-serif;
-        font-size: 24px;
-        color: #ff79a8;
-        margin: 15px 0;
-        text-align: center;
+    .timetable td {
+        border: 1px solid #999;
+        padding: 10px;
+        height: 55px;
+        font-size: 14px;
+    }
+
+    .period {
+        background-color: #f2f2f2;
+        font-weight: bold;
     }
 </style>
 
-<h2 class="cute-title">🌸 我的課表 🌸</h2>
-
-<table class="cute-table">
+<table class="timetable">
     <tr>
-        <th>星期</th>
-        <th>節次</th>
-        <th>課程</th>
+        <th></th>
+        <th>星期一</th>
+        <th>星期二</th>
+        <th>星期三</th>
+        <th>星期四</th>
+        <th>星期五</th>
     </tr>
 
     <tr>
-        <td>星期一</td>
-        <td>4、5、6 / 10、11</td>
-        <td>
-            中文能力與邏輯 AB<br>
-            英語溝通三級 AI
-        </td>
-    </tr>
-
-    <tr>
-        <td>星期二</td>
-        <td>4、5、6 / 10、11</td>
-        <td>
-            初階程式設計 AA<br>
-            計算機概論 AA
-        </td>
-    </tr>
-
-    <tr>
-        <td>星期三</td>
-        <td>4、5、6 / 9、10、11</td>
-        <td>
-            金融科技與洗錢防制<br>
-            商用微積分
-        </td>
-    </tr>
-
-    <tr>
-        <td>星期四</td>
-        <td>4、5、6 / 9、10、11</td>
-        <td>
-            會計學原理<br>
-            經濟學原理－個體篇
-        </td>
-    </tr>
-
-    <tr>
-        <td>星期五</td>
-        <td>4、6</td>
+        <td class="period">4</td>
+        <td rowspan="3">中文能力與邏輯 AB</td>
+        <td rowspan="3">初階程式設計 AA</td>
+        <td rowspan="3">金融科技與洗錢防制</td>
+        <td rowspan="3">會計學原理</td>
         <td>體育</td>
+    </tr>
+
+    <tr>
+        <td class="period">5</td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td class="period">6</td>
+        <td>體育</td>
+    </tr>
+
+    <tr>
+        <td class="period">9</td>
+        <td></td>
+        <td></td>
+        <td rowspan="3">商用微積分</td>
+        <td rowspan="3">經濟學原理－個體篇</td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td class="period">10</td>
+        <td rowspan="2">英語溝通三級 AI</td>
+        <td rowspan="2">計算機概論 AA</td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td class="period">11</td>
+        <td></td>
     </tr>
 </table>
