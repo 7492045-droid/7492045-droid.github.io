@@ -1,96 +1,86 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <title>自我介紹</title>
+<style>
+    .cute-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "Comic Sans MS", "DFKai-SB", sans-serif;
+        background: #fff0f6;
+        border-radius: 12px;
+        overflow: hidden;
+    }
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&family=Pacifico&display=swap" rel="stylesheet">
+    .cute-table th {
+        background: #ffb6d9;
+        color: white;
+        padding: 12px;
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #ffeef5;
-            font-family: 'Nunito', sans-serif;
-        }
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            background: #ffb6d9;
-            color: white;
-            border-bottom-left-radius: 50px;
-            border-bottom-right-radius: 50px;
-        }
-        header h1 {
-            font-size: 40px;
-            font-family: 'Pacifico', cursive;
-            margin: 0;
-        }
-        section {
-            width: 90%;
-            max-width: 700px;
-            background: white;
-            margin: 25px auto;
-            padding: 25px;
-            border-radius: 25px;
-            box-shadow: 0px 0px 15px rgba(255, 150, 200, 0.3);
-        }
-        h2 {
-            color: #ff78b6;
-            margin-bottom: 10px;
-        }
-        ul li {
-            margin-bottom: 8px;
-        }
-        .cute-divider {
-            text-align: center;
-            font-size: 20px;
-            color: #ff8ac2;
-            margin: 15px 0;
-        }
-        .contact p {
-            margin: 6px 0;
-        }
-    </style>
-</head>
+    .cute-table td {
+        border: 1px solid #ffcce1;
+        padding: 10px;
+        font-size: 16px;
+        color: #444;
+        background: #fff8fb;
+    }
 
-<body>
+    .cute-title {
+        font-family: "Comic Sans MS", "DFKai-SB", sans-serif;
+        font-size: 24px;
+        color: #ff79a8;
+        margin: 15px 0;
+        text-align: center;
+    }
+</style>
 
-    <header>
-        <h1>我的名字</h1>
-        <p>王羿蓁</p>
-    </header>
+<h2 class="cute-title">🌸 我的課表 🌸</h2>
 
-    <section>
-        <h2>💖 關於我</h2>
-        <p>我是王羿蓁！目前是一位東華大學的大一學生</p>
+<table class="cute-table">
+    <tr>
+        <th>星期</th>
+        <th>節次</th>
+        <th>課程</th>
+    </tr>
 
-        <div class="cute-divider">✿ ✿ ✿</div>
+    <tr>
+        <td>星期一</td>
+        <td>4、5、6 / 10、11</td>
+        <td>
+            中文能力與邏輯 AB<br>
+            英語溝通三級 AI
+        </td>
+    </tr>
 
-        <h2>🎀 我的興趣</h2>
-        <ul>
-            <li>畫畫 🎨</li>
-            <li>音樂 🎧</li>
-            <li>甜點 🍰</li>
-            <li>睡覺 💤</li>
-        </ul>
+    <tr>
+        <td>星期二</td>
+        <td>4、5、6 / 10、11</td>
+        <td>
+            初階程式設計 AA<br>
+            計算機概論 AA
+        </td>
+    </tr>
 
-        <div class="cute-divider">♡ ♡ ♡</div>
+    <tr>
+        <td>星期三</td>
+        <td>4、5、6 / 9、10、11</td>
+        <td>
+            金融科技與洗錢防制<br>
+            商用微積分
+        </td>
+    </tr>
 
-        <h2>⭐ 我的技能</h2>
-        <ul>
-            <li>拍照</li>
-            <li>簡單插畫 / 手繪</li>
-            <li>發呆</li>
-        </ul>
-    </section>
+    <tr>
+        <td>星期四</td>
+        <td>4、5、6 / 9、10、11</td>
+        <td>
+            會計學原理<br>
+            經濟學原理－個體篇
+        </td>
+    </tr>
 
-    <section class="contact">
-        <h2>📮 聯絡我</h2>
-        <p>Email：411435027@gms.ndhu.edu.tw</p>
-    </section>
-
-</body>
-</html>
+    <tr>
+        <td>星期五</td>
+        <td>4、6</td>
+        <td>體育</td>
+    </tr>
+</table>
