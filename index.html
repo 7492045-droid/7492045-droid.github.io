@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>3D 互動課表</title>
     <style>
-        /* 背景色改為柔和天藍色 */
         body { margin: 0; overflow: hidden; font-family: '微軟正黑體', Arial, sans-serif; background-color: #87CEEB; } 
         #info {
             position: absolute;
@@ -21,7 +20,6 @@
             opacity: 0; 
             max-width: 300px;
         }
-        /* 標題顏色改為深藍，與天藍背景搭配 */
         #info h2 { margin: 0 0 10px 0; font-size: 18px; color: #192a56; } 
         #info p { margin: 5px 0; font-size: 14px; color: #333; } 
         
@@ -67,51 +65,19 @@
     <script>
         // --- 1. 資料準備 ---
         
-        // 課程方塊顏色 (為搭配淺藍背景而挑選)
         const courseColors = [
-            0x42a5f5, // 藍色
-            0x66bb6a, // 綠色
-            0xffa726, // 橘色
-            0xab47bc, // 紫色
-            0xef5350, // 紅色
-            0x26c6da, // 青色
-            0x78909c, // 灰藍色
-            0x8d6e63, // 棕色
-            0xba68c8, // 淡紫
-            0xffee58, // 黃色
-            0x4dd0e1, // 天藍
-            0x9ccc65, // 淺綠
-            0xff8a65, // 淺橘紅
-            0x7986cb  // 淺靛藍
+            0x42a5f5, 0x66bb6a, 0xffa726, 0xab47bc, 0xef5350, 0x26c6da, 0x78909c, 0x8d6e63, 0xba68c8, 0xffee58, 0x4dd0e1, 0x9ccc65, 0xff8a65, 0x7986cb 
         ];
         let colorIndex = 0;
 
-        // 課程資料
         const rawCourses = [
-            // 星期一 (Day 1)
-            { day: 1, start: 4, duration: 3, name: "中文能力與邏輯 AB" },
-            { day: 1, start: 10, duration: 2, name: "英語溝通三級 AI" },
-            { day: 1, start: 13, duration: 2, name: "實習課" },
-
-            // 星期二 (Day 2)
-            { day: 2, start: 4, duration: 3, name: "初階程式設計 AA" },
-            { day: 2, start: 9, duration: 3, name: "計算機概論 AA" },
-
-            // 星期三 (Day 3)
-            { day: 3, start: 4, duration: 3, name: "金融科技與洗錢防制" },
-            { day: 3, start: 7, duration: 2, name: "實習課" },
-            { day: 3, start: 9, duration: 3, name: "商用微積分" },
-
-            // 星期四 (Day 4)
-            { day: 4, start: 4, duration: 3, name: "會計學原理" },
-            { day: 4, start: 9, duration: 3, name: "經濟學原理－個體篇" },
-            { day: 4, start: 13, duration: 1, name: "實習課" },
-
-            // 星期五 (Day 5)
+            { day: 1, start: 4, duration: 3, name: "中文能力與邏輯 AB" }, { day: 1, start: 10, duration: 2, name: "英語溝通三級 AI" }, { day: 1, start: 13, duration: 2, name: "實習課" },
+            { day: 2, start: 4, duration: 3, name: "初階程式設計 AA" }, { day: 2, start: 9, duration: 3, name: "計算機概論 AA" },
+            { day: 3, start: 4, duration: 3, name: "金融科技與洗錢防制" }, { day: 3, start: 7, duration: 2, name: "實習課" }, { day: 3, start: 9, duration: 3, name: "商用微積分" },
+            { day: 4, start: 4, duration: 3, name: "會計學原理" }, { day: 4, start: 9, duration: 3, name: "經濟學原理－個體篇" }, { day: 4, start: 13, duration: 1, name: "實習課" },
             { day: 5, start: 3, duration: 2, name: "體育" }, 
         ];
 
-        // 課程名稱顏色映射表 (確保不同名字顏色不重複，且使用預設暖色)
         const colorMap = {};
         const courses = rawCourses.map(course => {
             if (!colorMap[course.name]) {
@@ -124,7 +90,7 @@
 
         // --- 2. Three.js 場景設定 ---
         const scene = new THREE.Scene();
-        const skyBlueBgColor = 0x87CEEB; // 柔和的天藍色 (SkyBlue)
+        const skyBlueBgColor = 0x87CEEB; 
         scene.background = new THREE.Color(skyBlueBgColor); 
         scene.fog = new THREE.Fog(skyBlueBgColor, 20, 80); 
 
@@ -160,7 +126,7 @@
         const startX = -((5 * dayWidth) + (4 * spacing)) / 2 + (dayWidth/2); 
         const startZ = -10; 
 
-        // 地板網格 (還原為深色格子，確保在淺色背景下的高對比度)
+        // 地板網格 
         const gridHelper = new THREE.GridHelper(60, 60, 0x444444, 0x222222); 
         gridHelper.position.y = -0.1;
         scene.add(gridHelper);
@@ -196,6 +162,35 @@
         // 儲存所有課程方塊以便 Raycaster 檢測
         const courseMeshes = [];
 
+        // --- 新增：創建格狀紋理 ---
+        function createGridTexture(gridColor = '#ffffff', bgColor = 'rgba(255,255,255,0)', cellSize = 16) {
+            const canvas = document.createElement('canvas');
+            canvas.width = cellSize * 2;
+            canvas.height = cellSize * 2;
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = gridColor;
+            ctx.lineWidth = 1;
+
+            ctx.beginPath();
+            ctx.moveTo(0, cellSize);
+            ctx.lineTo(canvas.width, cellSize);
+            ctx.moveTo(cellSize, 0);
+            ctx.lineTo(cellSize, canvas.height);
+            ctx.stroke();
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(5, 5); // 調整重複次數以控制格子的密度
+            return texture;
+        }
+
+        const gridTexture = createGridTexture('rgba(255,255,255,0.2)', 'rgba(0,0,0,0)'); // 白色半透明格線
+
         // 建立課程方塊
         courses.forEach(course => {
             const x = startX + (course.day - 1) * (dayWidth + spacing);
@@ -211,6 +206,8 @@
                 roughness: 0.1,
                 metalness: 0.1,
                 clearcoat: 1.0,
+                map: gridTexture, // 將格狀紋理應用為基礎顏色貼圖
+                combine: THREE.MixOperation // 讓紋理與顏色混合
             });
 
             const mesh = new THREE.Mesh(geometry, material);
