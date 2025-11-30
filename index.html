@@ -65,7 +65,6 @@
     <script>
         // --- 1. 資料準備 ---
         
-        // 課程方塊顏色
         const courseColors = [
             0x42a5f5, 0x66bb6a, 0xffa726, 0xab47bc, 0xef5350, 0x26c6da, 0x78909c, 0x8d6e63, 0xba68c8, 0xffee58, 0x4dd0e1, 0x9ccc65, 0xff8a65, 0x7986cb 
         ];
@@ -127,8 +126,8 @@
         const startX = -((5 * dayWidth) + (4 * spacing)) / 2 + (dayWidth/2); 
         const startZ = -10; 
 
-        // 地板網格 (變淡：使用淺灰色)
-        const gridHelper = new THREE.GridHelper(60, 60, 0xaaaaaa, 0xcccccc); 
+        // 地板網格 (取中間值：中灰色)
+        const gridHelper = new THREE.GridHelper(60, 60, 0x777777, 0x999999); 
         gridHelper.position.y = -0.1;
         scene.add(gridHelper);
 
@@ -192,11 +191,11 @@
             scene.add(mesh);
             courseMeshes.push(mesh);
             
-            // --- 額外：為方塊添加邊緣線條，模擬「格子」效果 (變淡：降低不透明度) ---
+            // --- 額外：為方塊添加邊緣線條，模擬「格子」效果 (取中間值：透明度 0.4) ---
             const edges = new THREE.EdgesGeometry(geometry);
             const line = new THREE.LineSegments(
                 edges, 
-                new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2, transparent: true, opacity: 0.3 }) // 不透明度從 0.5 降到 0.3
+                new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2, transparent: true, opacity: 0.4 }) // 不透明度調為 0.4
             );
             
             line.position.copy(mesh.position);
