@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>3D 互動課表</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: '微軟正黑體', Arial, sans-serif; background-color: #1a1a2e; }
+        body { margin: 0; overflow: hidden; font-family: '微軟正黑體', Arial, sans-serif; background-color: #2e1a1a; } /* 調整背景色 */
         #info {
             position: absolute;
             top: 20px;
@@ -20,7 +20,7 @@
             opacity: 0; /* 預設隱藏，摸到方塊才顯示 */
             max-width: 300px;
         }
-        #info h2 { margin: 0 0 10px 0; font-size: 18px; color: #4cc9f0; }
+        #info h2 { margin: 0 0 10px 0; font-size: 18px; color: #f0c94c; } /* 調整標題顏色以配合暖色系 */
         #info p { margin: 5px 0; font-size: 14px; color: #ddd; }
         
         #instructions {
@@ -28,7 +28,7 @@
             bottom: 20px;
             width: 100%;
             text-align: center;
-            color: #888;
+            color: #ccc; /* 調整說明文字顏色 */
             font-size: 12px;
             pointer-events: none;
         }
@@ -63,19 +63,19 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
     <script>
-        // --- 1. 資料準備 (將您的 HTML 表格轉換為 JSON) ---
+        // --- 1. 資料準備 ---
+        
         // 隨機顏色生成器
         function getRandomColor() {
-            // 生成鮮明且不過於暗的顏色
             const hue = Math.floor(Math.random() * 360);
-            const saturation = Math.floor(Math.random() * 30) + 70; // 70-100%
-            const lightness = Math.floor(Math.random() * 20) + 60; // 60-80%
+            const saturation = Math.floor(Math.random() * 30) + 70; 
+            const lightness = Math.floor(Math.random() * 20) + 60; 
             const color = new THREE.Color(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
             return color.getHex();
         }
 
         // 課程資料
-        const courses = [
+        const rawCourses = [
             // 星期一 (Day 1)
             { day: 1, start: 4, duration: 3, name: "中文能力與邏輯 AB" },
             { day: 1, start: 10, duration: 2, name: "英語溝通三級 AI" },
@@ -96,17 +96,27 @@
             { day: 4, start: 13, duration: 1, name: "實習課" },
 
             // 星期五 (Day 5)
-            // 體育課合併為一個方塊，從第3節開始，持續2節
             { day: 5, start: 3, duration: 2, name: "體育" }, 
-        ].map(course => ({ ...course, color: getRandomColor() })); // 為每門課分配隨機顏色
+        ];
+
+        // 課程名稱顏色映射表 (確保不同名字顏色不重複)
+        const colorMap = {};
+        const courses = rawCourses.map(course => {
+            if (!colorMap[course.name]) {
+                colorMap[course.name] = getRandomColor();
+            }
+            return { ...course, color: colorMap[course.name] };
+        });
+
 
         // --- 2. Three.js 場景設定 ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x1a1a2e); // 深色背景
-        scene.fog = new THREE.Fog(0x1a1a2e, 20, 80);
+        const warmBgColor = 0x2e1a1a; // 柔和的深紅棕色 (暖色系)
+        scene.background = new THREE.Color(warmBgColor); 
+        scene.fog = new THREE.Fog(warmBgColor, 20, 80); // 霧色也跟著背景色調整
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 30, 40); // 設置相機位置
+        camera.position.set(0, 30, 40); 
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -117,7 +127,7 @@
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.target.set(0, 0, 5); // 讓旋轉中心在課表中段
+        controls.target.set(0, 0, 5); 
 
         // 燈光
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -132,13 +142,13 @@
 
         // 參數
         const dayWidth = 4;
-        const periodHeight = 1.5; // 每節課在Z軸的長度
+        const periodHeight = 1.5; 
         const spacing = 0.5;
-        const startX = -((5 * dayWidth) + (4 * spacing)) / 2 + (dayWidth/2); // 置中 X
-        const startZ = -10; // 起始 Z
+        const startX = -((5 * dayWidth) + (4 * spacing)) / 2 + (dayWidth/2); 
+        const startZ = -10; 
 
         // 地板網格
-        const gridHelper = new THREE.GridHelper(60, 60, 0x444444, 0x222222);
+        const gridHelper = new THREE.GridHelper(60, 60, 0x555555, 0x333333); // 網格顏色也微調
         gridHelper.position.y = -0.1;
         scene.add(gridHelper);
 
@@ -167,7 +177,7 @@
         const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
         days.forEach((day, index) => {
             const x = startX + index * (dayWidth + spacing);
-            createLabel(day, x, startZ - 3, 80, '#4cc9f0');
+            createLabel(day, x, startZ - 3, 80, '#f0c94c'); // 調整星期標籤顏色
         });
 
         // 儲存所有課程方塊以便 Raycaster 檢測
@@ -175,22 +185,16 @@
 
         // 建立課程方塊
         courses.forEach(course => {
-            // 計算位置
-            // X: 根據星期
             const x = startX + (course.day - 1) * (dayWidth + spacing);
-            
-            // Z: 根據節次 (每節課長度 periodHeight)
-            // 課程中心點 = 起始位置 + (開始節次 - 1) * 高度 + (持續節次 * 高度 / 2)
             const z = startZ + ((course.start - 1) * periodHeight) + (course.duration * periodHeight / 2);
 
-            // 幾何體變形 (根據持續時間拉長 Z 軸)
             const geometry = new THREE.BoxGeometry(dayWidth - 0.4, 2, (periodHeight * course.duration) - 0.4);
             
             const material = new THREE.MeshPhysicalMaterial({
                 color: course.color,
                 transparent: true,
                 opacity: 0.9,
-                transmission: 0.2, // 玻璃質感
+                transmission: 0.2, 
                 roughness: 0.1,
                 metalness: 0.1,
                 clearcoat: 1.0,
@@ -198,12 +202,10 @@
 
             const mesh = new THREE.Mesh(geometry, material);
             
-            // 位置調整
-            mesh.position.set(x, 1, z); // y=1 因為高度是2，讓它立在地板上
+            mesh.position.set(x, 1, z); 
             mesh.castShadow = true;
             mesh.receiveShadow = true;
 
-            // 綁定資料到 Mesh 物件上，方便後續讀取
             mesh.userData = course; 
             
             scene.add(mesh);
@@ -224,7 +226,6 @@
         const timeEl = document.getElementById('course-time');
 
         function onMouseMove(event) {
-            // 計算滑鼠位置 (-1 到 +1)
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
         }
@@ -245,25 +246,21 @@
                 const object = intersects[0].object;
 
                 if (intersectedObject !== object) {
-                    // 恢復上一個物體的顏色
                     if (intersectedObject) {
                         intersectedObject.material.emissive.setHex(intersectedObject.currentHex);
                         intersectedObject.scale.set(1, 1, 1);
                     }
 
-                    // 紀錄並設定新物體
                     intersectedObject = object;
                     intersectedObject.currentHex = intersectedObject.material.emissive.getHex();
                     
-                    // 發光效果
                     intersectedObject.material.emissive.setHex(0x555555);
-                    intersectedObject.scale.set(1.05, 1.05, 1.05); // 微微放大
+                    intersectedObject.scale.set(1.05, 1.05, 1.05); 
 
-                    // 更新 UI
                     const data = intersectedObject.userData;
                     infoDiv.style.opacity = 1;
                     nameEl.textContent = data.name;
-                    nameEl.style.color = '#' + data.color.toString(16); // 使用課程自己的顏色
+                    nameEl.style.color = '#' + data.color.toString(16); 
                     timeEl.textContent = `星期${['','一','二','三','四','五'][data.day]} 第 ${data.start} - ${data.start + data.duration - 1} 節`;
                 }
             } else {
