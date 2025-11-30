@@ -127,8 +127,8 @@
         const startX = -((5 * dayWidth) + (4 * spacing)) / 2 + (dayWidth/2); 
         const startZ = -10; 
 
-        // 地板網格 (維持深色)
-        const gridHelper = new THREE.GridHelper(60, 60, 0x444444, 0x222222); 
+        // 地板網格 (變淡：使用淺灰色)
+        const gridHelper = new THREE.GridHelper(60, 60, 0xaaaaaa, 0xcccccc); 
         gridHelper.position.y = -0.1;
         scene.add(gridHelper);
 
@@ -192,18 +192,16 @@
             scene.add(mesh);
             courseMeshes.push(mesh);
             
-            // --- 額外：為方塊添加邊緣線條，模擬「格子」效果 ---
+            // --- 額外：為方塊添加邊緣線條，模擬「格子」效果 (變淡：降低不透明度) ---
             const edges = new THREE.EdgesGeometry(geometry);
             const line = new THREE.LineSegments(
                 edges, 
-                new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2, transparent: true, opacity: 0.5 }) // 白色半透明線條
+                new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2, transparent: true, opacity: 0.3 }) // 不透明度從 0.5 降到 0.3
             );
             
-            // 將線條放在方塊內，確保位置一致
             line.position.copy(mesh.position);
             scene.add(line);
             
-            // 將邊緣線段也納入互動檢測，確保滑鼠靠近線段也能觸發資訊顯示
             line.userData = course;
             courseMeshes.push(line);
         });
@@ -239,38 +237,31 @@
             const intersects = raycaster.intersectObjects(courseMeshes);
 
             if (intersects.length > 0) {
-                // 找到第一個交集物體 (可能是方塊本體或邊緣線條)
                 const object = intersects[0].object;
                 
-                // 確保我們拿到的是課程資料 (因為邊緣線段和方塊共用資料)
-                const courseMesh = object.type === 'LineSegments' ? object : object;
+                const courseMesh = object.geometry.type === 'BoxGeometry' ? object : object;
 
                 if (intersectedObject !== courseMesh) {
                     if (intersectedObject) {
-                        // 恢復上一個物體的顏色/狀態
                         if (intersectedObject.material.emissive) {
                              intersectedObject.material.emissive.setHex(intersectedObject.currentHex);
                         } else if (intersectedObject.material.color) {
-                            // 如果是線段材質，恢復顏色 (雖然線段材質通常不變，但我們將其納入檢查)
                             intersectedObject.material.color.setHex(0xffffff); 
                         }
-                        // 確保方塊本體縮放恢復
-                        const actualBlock = intersectedObject.geometry.type === 'BoxGeometry' ? intersectedObject : intersectedObject.parent;
+                        const actualBlock = intersectedObject.geometry.type === 'BoxGeometry' ? intersectedObject : scene.children.find(c => c.uuid === intersectedObject.parent.uuid && c.geometry.type === 'BoxGeometry');
                         if(actualBlock) actualBlock.scale.set(1, 1, 1);
                         
                     }
 
-                    // 記錄新物體
                     intersectedObject = courseMesh;
-                    const blockToScale = intersectedObject.geometry.type === 'BoxGeometry' ? intersectedObject : intersectedObject.parent;
+                    const blockToScale = intersectedObject.geometry.type === 'BoxGeometry' ? intersectedObject : scene.children.find(c => c.uuid === intersectedObject.parent.uuid && c.geometry.type === 'BoxGeometry');
 
 
-                    // 應用高亮效果
                     if (intersectedObject.material.emissive) {
                         intersectedObject.currentHex = intersectedObject.material.emissive.getHex();
-                        intersectedObject.material.emissive.setHex(0x555555); // 發光效果
+                        intersectedObject.material.emissive.setHex(0x555555); 
                     }
-                    if(blockToScale) blockToScale.scale.set(1.05, 1.05, 1.05); // 微微放大方塊本體
+                    if(blockToScale) blockToScale.scale.set(1.05, 1.05, 1.05); 
 
                     const data = intersectedObject.userData;
                     infoDiv.style.opacity = 1;
@@ -280,14 +271,13 @@
                 }
             } else {
                 if (intersectedObject) {
-                    // 恢復
                     if (intersectedObject.material.emissive) {
                         intersectedObject.material.emissive.setHex(intersectedObject.currentHex);
                     } else if (intersectedObject.material.color) {
                         intersectedObject.material.color.setHex(0xffffff); 
                     }
                     
-                    const blockToScale = intersectedObject.geometry.type === 'BoxGeometry' ? intersectedObject : intersectedObject.parent;
+                    const blockToScale = intersectedObject.geometry.type === 'BoxGeometry' ? intersectedObject : scene.children.find(c => c.uuid === intersectedObject.parent.uuid && c.geometry.type === 'BoxGeometry');
                     if(blockToScale) blockToScale.scale.set(1, 1, 1);
                     
                     intersectedObject = null;
