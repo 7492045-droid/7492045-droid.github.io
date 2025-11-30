@@ -4,31 +4,33 @@
     <meta charset="UTF-8">
     <title>3D 互動課表</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: '微軟正黑體', Arial, sans-serif; background-color: #2e1a1a; } /* 背景色 */
+        /* 背景色改為柔和天藍色 */
+        body { margin: 0; overflow: hidden; font-family: '微軟正黑體', Arial, sans-serif; background-color: #87CEEB; } 
         #info {
             position: absolute;
             top: 20px;
             left: 20px;
-            color: white;
-            background: rgba(0, 0, 0, 0.7);
+            color: black; /* 資訊文字改為黑色，在淺色背景下更清晰 */
+            background: rgba(255, 255, 255, 0.7); /* 資訊面板背景改為淺色半透明 */
             padding: 15px;
             border-radius: 8px;
             pointer-events: none;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(0,0,0,0.1); /* 邊框調整 */
             transition: opacity 0.3s;
             opacity: 0; 
             max-width: 300px;
         }
-        #info h2 { margin: 0 0 10px 0; font-size: 18px; color: #f0c94c; } /* 標題顏色 */
-        #info p { margin: 5px 0; font-size: 14px; color: #ddd; }
+        /* 標題顏色改為深藍，與天藍背景搭配 */
+        #info h2 { margin: 0 0 10px 0; font-size: 18px; color: #192a56; } 
+        #info p { margin: 5px 0; font-size: 14px; color: #333; } /* 內文顏色 */
         
         #instructions {
             position: absolute;
             bottom: 20px;
             width: 100%;
             text-align: center;
-            color: #ccc; 
+            color: #333; /* 說明文字顏色 */
             font-size: 12px;
             pointer-events: none;
         }
@@ -38,7 +40,7 @@
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            color: white;
+            color: #192a56; /* 讀取文字顏色也改為深藍 */
             font-size: 24px;
             animation: pulse 1.5s infinite;
         }
@@ -65,22 +67,23 @@
     <script>
         // --- 1. 資料準備 ---
         
-        // 精心挑選的暖色系顏色組
-        const warmColors = [
-            0xff9966, // 淺橘紅
-            0xcc6633, // 深橘紅
-            0xffcc66, // 柔和黃橙
-            0xddaa44, // 泥土黃
-            0xee7755, // 鮭魚橘
-            0xaa5533, // 紅棕色
-            0xffb366, // 蜜桃色
-            0x995522, // 深咖啡
-            0xff8844, // 亮橘色
-            0xcc7755, // 磚紅色
-            0xcc9933, // 金棕色
-            0xee9977, // 淡紅橙
-            0xaa6644, // 焦糖色
-            0x994422, // 深土色
+        // 為了搭配新的天藍色背景，我們需要一套新的課程方塊顏色，讓它們在淺藍背景下依然顯眼且不刺眼。
+        // 這組顏色會包含一些飽和度適中的冷色和暖色，以提供良好的辨識度。
+        const courseColors = [
+            0x42a5f5, // 藍色
+            0x66bb6a, // 綠色
+            0xffa726, // 橘色
+            0xab47bc, // 紫色
+            0xef5350, // 紅色
+            0x26c6da, // 青色
+            0x78909c, // 灰藍色
+            0x8d6e63, // 棕色
+            0xba68c8, // 淡紫
+            0xffee58, // 黃色
+            0x4dd0e1, // 天藍
+            0x9ccc65, // 淺綠
+            0xff8a65, // 淺橘紅
+            0x7986cb  // 淺靛藍
         ];
         let colorIndex = 0;
 
@@ -113,9 +116,8 @@
         const colorMap = {};
         const courses = rawCourses.map(course => {
             if (!colorMap[course.name]) {
-                // 從預設的暖色組中取出一個顏色
-                colorMap[course.name] = warmColors[colorIndex % warmColors.length];
-                colorIndex++; // 索引遞增，確保下一個課程使用不同顏色
+                colorMap[course.name] = courseColors[colorIndex % courseColors.length];
+                colorIndex++; 
             }
             return { ...course, color: colorMap[course.name] };
         });
@@ -123,9 +125,9 @@
 
         // --- 2. Three.js 場景設定 ---
         const scene = new THREE.Scene();
-        const warmBgColor = 0x2e1a1a; 
-        scene.background = new THREE.Color(warmBgColor); 
-        scene.fog = new THREE.Fog(warmBgColor, 20, 80); 
+        const skyBlueBgColor = 0x87CEEB; // 柔和的天藍色 (SkyBlue)
+        scene.background = new THREE.Color(skyBlueBgColor); 
+        scene.fog = new THREE.Fog(skyBlueBgColor, 20, 80); // 霧色也跟著背景色調整
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 30, 40); 
@@ -160,7 +162,7 @@
         const startZ = -10; 
 
         // 地板網格
-        const gridHelper = new THREE.GridHelper(60, 60, 0x555555, 0x333333); 
+        const gridHelper = new THREE.GridHelper(60, 60, 0x999999, 0xcccccc); // 網格顏色調整為淺灰，在藍色背景下更柔和
         gridHelper.position.y = -0.1;
         scene.add(gridHelper);
 
@@ -189,7 +191,7 @@
         const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
         days.forEach((day, index) => {
             const x = startX + index * (dayWidth + spacing);
-            createLabel(day, x, startZ - 3, 80, '#f0c94c'); 
+            createLabel(day, x, startZ - 3, 80, '#192a56'); // 星期標籤顏色改為深藍
         });
 
         // 儲存所有課程方塊以便 Raycaster 檢測
