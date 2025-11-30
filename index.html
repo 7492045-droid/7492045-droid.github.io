@@ -10,27 +10,27 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            color: black; /* 資訊文字改為黑色，在淺色背景下更清晰 */
-            background: rgba(255, 255, 255, 0.7); /* 資訊面板背景改為淺色半透明 */
+            color: black; 
+            background: rgba(255, 255, 255, 0.7); 
             padding: 15px;
             border-radius: 8px;
             pointer-events: none;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(0,0,0,0.1); /* 邊框調整 */
+            backdrop-filter: blur(5px); 
+            border: 1px solid rgba(0,0,0,0.1); 
             transition: opacity 0.3s;
             opacity: 0; 
             max-width: 300px;
         }
         /* 標題顏色改為深藍，與天藍背景搭配 */
         #info h2 { margin: 0 0 10px 0; font-size: 18px; color: #192a56; } 
-        #info p { margin: 5px 0; font-size: 14px; color: #333; } /* 內文顏色 */
+        #info p { margin: 5px 0; font-size: 14px; color: #333; } 
         
         #instructions {
             position: absolute;
             bottom: 20px;
             width: 100%;
             text-align: center;
-            color: #333; /* 說明文字顏色 */
+            color: #333; 
             font-size: 12px;
             pointer-events: none;
         }
@@ -40,7 +40,7 @@
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            color: #192a56; /* 讀取文字顏色也改為深藍 */
+            color: #192a56; 
             font-size: 24px;
             animation: pulse 1.5s infinite;
         }
@@ -67,8 +67,7 @@
     <script>
         // --- 1. 資料準備 ---
         
-        // 為了搭配新的天藍色背景，我們需要一套新的課程方塊顏色，讓它們在淺藍背景下依然顯眼且不刺眼。
-        // 這組顏色會包含一些飽和度適中的冷色和暖色，以提供良好的辨識度。
+        // 課程方塊顏色 (為搭配淺藍背景而挑選)
         const courseColors = [
             0x42a5f5, // 藍色
             0x66bb6a, // 綠色
@@ -127,7 +126,7 @@
         const scene = new THREE.Scene();
         const skyBlueBgColor = 0x87CEEB; // 柔和的天藍色 (SkyBlue)
         scene.background = new THREE.Color(skyBlueBgColor); 
-        scene.fog = new THREE.Fog(skyBlueBgColor, 20, 80); // 霧色也跟著背景色調整
+        scene.fog = new THREE.Fog(skyBlueBgColor, 20, 80); 
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 30, 40); 
@@ -161,8 +160,8 @@
         const startX = -((5 * dayWidth) + (4 * spacing)) / 2 + (dayWidth/2); 
         const startZ = -10; 
 
-        // 地板網格
-        const gridHelper = new THREE.GridHelper(60, 60, 0x999999, 0xcccccc); // 網格顏色調整為淺灰，在藍色背景下更柔和
+        // 地板網格 (還原為深色格子，確保在淺色背景下的高對比度)
+        const gridHelper = new THREE.GridHelper(60, 60, 0x444444, 0x222222); 
         gridHelper.position.y = -0.1;
         scene.add(gridHelper);
 
@@ -191,7 +190,7 @@
         const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
         days.forEach((day, index) => {
             const x = startX + index * (dayWidth + spacing);
-            createLabel(day, x, startZ - 3, 80, '#192a56'); // 星期標籤顏色改為深藍
+            createLabel(day, x, startZ - 3, 80, '#192a56'); 
         });
 
         // 儲存所有課程方塊以便 Raycaster 檢測
