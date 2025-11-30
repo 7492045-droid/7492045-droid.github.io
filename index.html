@@ -64,41 +64,41 @@
 
     <script>
         // --- 1. 資料準備 (將您的 HTML 表格轉換為 JSON) ---
-        // 顏色配置 (Pastel / Neon colors)
-        const colors = {
-            lang: 0xff6b6b,    // 中文/英文
-            code: 0x4ecdc4,    // 程式/計概
-            finance: 0xffd93d, // 金融/會計/經濟
-            math: 0x6c5ce7,    // 微積分
-            sport: 0xa8e6cf,   // 體育
-            lab: 0xff9ff3      // 實習
-        };
+        // 隨機顏色生成器
+        function getRandomColor() {
+            // 生成鮮明且不過於暗的顏色
+            const hue = Math.floor(Math.random() * 360);
+            const saturation = Math.floor(Math.random() * 30) + 70; // 70-100%
+            const lightness = Math.floor(Math.random() * 20) + 60; // 60-80%
+            const color = new THREE.Color(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+            return color.getHex();
+        }
 
         // 課程資料
         const courses = [
             // 星期一 (Day 1)
-            { day: 1, start: 4, duration: 3, name: "中文能力與邏輯 AB", type: "lang", color: colors.lang },
-            { day: 1, start: 10, duration: 2, name: "英語溝通三級 AI", type: "lang", color: colors.lang },
-            { day: 1, start: 13, duration: 2, name: "實習課", type: "lab", color: colors.lab },
+            { day: 1, start: 4, duration: 3, name: "中文能力與邏輯 AB" },
+            { day: 1, start: 10, duration: 2, name: "英語溝通三級 AI" },
+            { day: 1, start: 13, duration: 2, name: "實習課" },
 
             // 星期二 (Day 2)
-            { day: 2, start: 4, duration: 3, name: "初階程式設計 AA", type: "code", color: colors.code },
-            { day: 2, start: 9, duration: 3, name: "計算機概論 AA", type: "code", color: colors.code },
+            { day: 2, start: 4, duration: 3, name: "初階程式設計 AA" },
+            { day: 2, start: 9, duration: 3, name: "計算機概論 AA" },
 
             // 星期三 (Day 3)
-            { day: 3, start: 4, duration: 3, name: "金融科技與洗錢防制", type: "finance", color: colors.finance },
-            { day: 3, start: 7, duration: 2, name: "實習課", type: "lab", color: colors.lab },
-            { day: 3, start: 9, duration: 3, name: "商用微積分", type: "math", color: colors.math },
+            { day: 3, start: 4, duration: 3, name: "金融科技與洗錢防制" },
+            { day: 3, start: 7, duration: 2, name: "實習課" },
+            { day: 3, start: 9, duration: 3, name: "商用微積分" },
 
             // 星期四 (Day 4)
-            { day: 4, start: 4, duration: 3, name: "會計學原理", type: "finance", color: colors.finance },
-            { day: 4, start: 9, duration: 3, name: "經濟學原理－個體篇", type: "finance", color: colors.finance },
-            { day: 4, start: 13, duration: 1, name: "實習課", type: "lab", color: colors.lab },
+            { day: 4, start: 4, duration: 3, name: "會計學原理" },
+            { day: 4, start: 9, duration: 3, name: "經濟學原理－個體篇" },
+            { day: 4, start: 13, duration: 1, name: "實習課" },
 
             // 星期五 (Day 5)
-            { day: 5, start: 3, duration: 1, name: "體育", type: "sport", color: colors.sport },
-            { day: 5, start: 4, duration: 1, name: "體育", type: "sport", color: colors.sport }, // 分開畫比較好對齊，或者合併
-        ];
+            // 體育課合併為一個方塊，從第3節開始，持續2節
+            { day: 5, start: 3, duration: 2, name: "體育" }, 
+        ].map(course => ({ ...course, color: getRandomColor() })); // 為每門課分配隨機顏色
 
         // --- 2. Three.js 場景設定 ---
         const scene = new THREE.Scene();
@@ -170,18 +170,10 @@
             createLabel(day, x, startZ - 3, 80, '#4cc9f0');
         });
 
-        // 繪製節次標籤 (左側)
-        for(let i=1; i<=14; i++) {
-             // 簡單的節次標示
-             // createLabel(i.toString(), startX - dayWidth, startZ + (i * periodHeight) - (periodHeight/2), 40, '#888');
-        }
-
         // 儲存所有課程方塊以便 Raycaster 檢測
         const courseMeshes = [];
 
         // 建立課程方塊
-        const boxGeometry = new THREE.BoxGeometry(dayWidth - 0.2, 1, periodHeight - 0.2); // 基礎幾何
-
         courses.forEach(course => {
             // 計算位置
             // X: 根據星期
@@ -235,12 +227,6 @@
             // 計算滑鼠位置 (-1 到 +1)
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            // 移動資訊面板
-            if(intersectedObject) {
-                // 如果想要資訊面板跟隨滑鼠，可以在這裡寫邏輯
-                // 但固定左上角比較不干擾視線
-            }
         }
 
         window.addEventListener('mousemove', onMouseMove, false);
@@ -277,7 +263,7 @@
                     const data = intersectedObject.userData;
                     infoDiv.style.opacity = 1;
                     nameEl.textContent = data.name;
-                    nameEl.style.color = '#' + data.color.toString(16);
+                    nameEl.style.color = '#' + data.color.toString(16); // 使用課程自己的顏色
                     timeEl.textContent = `星期${['','一','二','三','四','五'][data.day]} 第 ${data.start} - ${data.start + data.duration - 1} 節`;
                 }
             } else {
